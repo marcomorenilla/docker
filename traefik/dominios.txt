@@ -1,0 +1,5 @@
+localhost
+*.localhost
+proxy.localhost
+phpmyadmin.localhost
+wp.localhost

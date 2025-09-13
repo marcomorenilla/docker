@@ -1,0 +1,54 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+serversTransport:
+  insecureSkipVerify: true
+
+entryPoints:
+  # Redirect HTTP to HTTPS
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  # HTTPS endpoint
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        domains:
+          - main: "localhost"
+            sans:
+              - "*.localhost"
+
+providers:
+  providersThrottleDuration: 2s
+
+  # Docker provider for services running inside Docker
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    watch: true
+    network: proxy
+    exposedByDefault: true
+
+  # File provider for dynamic configuration
+  file:
+    filename: /dynamic/dynamic.yml
+    watch: true
+
+# Enable Traefik UI
+api:
+  dashboard: true
+  insecure: true
+
+# Log level: INFO|DEBUG|ERROR
+log:
+  level: DEBUG
+  filePath: "/var/log/traefik/traefik.log"
+
+      

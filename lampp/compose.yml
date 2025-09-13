@@ -1,0 +1,40 @@
+services:
+  db:
+    container_name: mariadb
+    image: mariadb:latest
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb:/var/lib/mysql:rw
+    networks:
+      - proxy
+
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin:latest
+    restart: always
+    expose:
+      - 80
+    depends_on:
+      - db
+    env_file:
+      - .env
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.localhost`)
+      - traefik.http.services.phpmyadmin.loadbalancer.server.port=80
+      - traefik.http.routers.phpmyadmin.entrypoints=websecure
+      - traefik.http.routers.traefik.tls=true
+    networks:
+      - proxy
+
+volumes:
+  mariadb:
+
+networks:
+  proxy:
+    external: true

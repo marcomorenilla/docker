@@ -1,0 +1,33 @@
+services:
+  traefik:
+    image: traefik:3.4.4
+    container_name: traefik
+    command: "--configFile=/etc/traefik/traefik.yml"
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - traefik_data:/etc/traefik
+      - ./config/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./config/dynamic.yml:/dynamic/dynamic.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./certs:/certs:ro
+    environment:
+      - TZ=Europe/Madrid
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik.rule=Host(`proxy.localhost`)
+      - traefik.http.routers.traefik.entrypoints=websecure
+      - traefik.http.services.traefik.loadbalancer.server.port=8080
+      - traefik.http.routers.traefik.tls=true
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  traefik_data:
