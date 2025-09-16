@@ -3,3 +3,4 @@ localhost
 proxy.localhost
 phpmyadmin.localhost
 wp.localhost
+apache.localhost
