@@ -3,7 +3,7 @@ services:
   wordpress:
     image: wordpress:6.8-php8.1-apache
     container_name: wordpress
-    restart: unless-stopped
+    #restart: unless-stopped
     expose:
       - 80
     env_file:
